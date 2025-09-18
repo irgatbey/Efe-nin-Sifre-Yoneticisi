@@ -7,11 +7,10 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no"
     />
     <title>Efe'nin Şifre Kasası</title>
-
     <link rel="manifest" href="manifest.json" />
-    <link rel="icon" href="favicon.ico" sizes="any" />
-    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
     <link rel="stylesheet" href="style.css" />
     <meta name="theme-color" content="#0d1117" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -31,9 +30,11 @@
     <div id="splash-screen">
       <img src="assets/logo.png" alt="Uygulama Logosu" class="splash-logo" />
     </div>
+
     <div class="shape-blob"></div>
     <div class="shape-blob one"></div>
     <div class="shape-blob two"></div>
+
     <div class="app-screen">
       <header class="app-header">
         <img src="assets/logo.png" alt="Uygulama Logosu" class="header-logo" />
@@ -54,15 +55,91 @@
         </div>
       </main>
     </div>
+
     <div id="toast-notification" class="toast">
       <i id="toast-icon" class="fas fa-check-circle"></i>
       <p id="toast-message"></p>
     </div>
-    <button id="fab-add-btn" class="fab"><i class="fas fa-plus"></i></button>
-    <div id="add-modal" class="modal-overlay"></div>
-    <div id="edit-modal" class="modal-overlay"></div>
-    <div id="confirm-modal" class="modal-overlay"></div>
-    <div id="success-overlay" class="success-overlay"></div>
+
+    <button id="fab-add-btn" class="fab">
+      <i class="fas fa-plus"></i>
+    </button>
+
+    <div id="add-modal" class="modal-overlay">
+      <div class="modal-content">
+        <button class="modal-close-btn"><i class="fas fa-times"></i></button>
+        <h2>Yeni Şifre Ekle</h2>
+        <form id="password-form">
+          <input
+            type="text"
+            id="site-name"
+            placeholder="Site Adı (örn: google.com)"
+            required
+          />
+          <input
+            type="text"
+            id="username"
+            placeholder="Kullanıcı Adı / E-posta"
+            required
+          />
+          <input type="password" id="password" placeholder="Şifre" required />
+          <button type="submit" class="main-action-btn">Kaydet</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="edit-modal" class="modal-overlay">
+      <div class="modal-content">
+        <button class="modal-close-btn"><i class="fas fa-times"></i></button>
+        <h2>Şifreyi Düzenle</h2>
+        <form id="edit-form">
+          <input
+            type="text"
+            id="edit-site-name"
+            placeholder="Site Adı"
+            required
+          />
+          <input
+            type="text"
+            id="edit-username"
+            placeholder="Kullanıcı Adı"
+            required
+          />
+          <input type="text" id="edit-password" placeholder="Şifre" required />
+          <button type="submit" class="main-action-btn">Güncelle</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="confirm-modal" class="modal-overlay">
+      <div class="modal-content">
+        <button class="modal-close-btn"><i class="fas fa-times"></i></button>
+        <h2 id="confirm-title">Emin misiniz?</h2>
+        <p id="confirm-text">Bu işlemi geri alamazsınız.</p>
+        <div class="modal-actions">
+          <button id="confirm-cancel-btn" class="secondary-action-btn">
+            İptal
+          </button>
+          <button id="confirm-delete-btn" class="danger-btn">Onayla</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="success-overlay" class="success-overlay">
+      <svg
+        class="checkmark"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 52 52"
+      >
+        <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
+        <path
+          class="checkmark__check"
+          fill="none"
+          d="M14.1 27.2l7.1 7.2 16.7-16.8"
+        />
+      </svg>
+      <p id="success-message"></p>
+    </div>
 
     <script src="app.js"></script>
   </body>

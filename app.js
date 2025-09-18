@@ -1,19 +1,15 @@
+// AÇILIŞ EKRANI MANTIĞI
 window.addEventListener("load", () => {
   const splashScreen = document.getElementById("splash-screen");
-
-  setTimeout(() => {
-    if (splashScreen) {
+  if (splashScreen) {
+    setTimeout(() => {
       splashScreen.classList.add("hidden");
-      splashScreen.addEventListener(
-        "transitionend",
-        () => {
-          splashScreen.style.display = "none";
-        },
-        { once: true }
-      );
-    }
-  }, 2000);
+    }, 1500);
+  }
+});
 
+// ANA UYGULAMA MANTIĞI
+document.addEventListener("DOMContentLoaded", () => {
   // --- HTML ELEMANLARI ---
   const appContent = document.querySelector(".app-content");
   const fabAddBtn = document.getElementById("fab-add-btn");
@@ -34,7 +30,6 @@ window.addEventListener("load", () => {
   const editPasswordInput = document.getElementById("edit-password");
   const confirmTitle = document.getElementById("confirm-title");
   const confirmText = document.getElementById("confirm-text");
-  const confirmDeleteBtn = document.getElementById("confirm-delete-btn");
   const successOverlay = document.getElementById("success-overlay");
   const successMessage = document.getElementById("success-message");
   const toastNotification = document.getElementById("toast-notification");
@@ -44,6 +39,7 @@ window.addEventListener("load", () => {
   let passwords = JSON.parse(localStorage.getItem("passwords")) || [];
   let currentlyEditingIndex = null;
   let swipedItem = null;
+  let confirmAction = () => {};
 
   const savePasswords = () => {
     localStorage.setItem("passwords", JSON.stringify(passwords));
@@ -51,13 +47,11 @@ window.addEventListener("load", () => {
   };
 
   // --- YARDIMCI FONKSİYONLAR ---
-  const hapticFeedback = () => navigator.vibrate && navigator.vibrate(50);
   const showSuccessAnimation = (message) => {
     successMessage.textContent = message;
     successOverlay.classList.add("visible");
     setTimeout(() => successOverlay.classList.remove("visible"), 2500);
   };
-
   let toastTimeout;
   const showToast = (message) => {
     clearTimeout(toastTimeout);
@@ -68,33 +62,18 @@ window.addEventListener("load", () => {
       2000
     );
   };
-
   const escapeHTML = (str) => {
     const p = document.createElement("p");
     p.appendChild(document.createTextNode(str));
     return p.innerHTML;
   };
-
   const openModal = (modal) => modal.classList.add("visible");
   const closeModal = (modal) => modal.classList.remove("visible");
 
-  const showConfirmation = (title, text, onConfirm) => {
+  const showConfirmation = (title, text, onConfirmCallback) => {
     confirmTitle.textContent = title;
     confirmText.textContent = text;
-
-    let confirmBtn = document.getElementById("confirm-delete-btn");
-    const newConfirmBtn = confirmBtn.cloneNode(true);
-    confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
-
-    newConfirmBtn.addEventListener(
-      "click",
-      () => {
-        onConfirm();
-        closeModal(confirmModal);
-      },
-      { once: true }
-    );
-
+    confirmAction = onConfirmCallback;
     openModal(confirmModal);
   };
 
@@ -133,7 +112,6 @@ window.addEventListener("load", () => {
       passwordsList.appendChild(wrapper);
     });
   };
-
   const updateUI = () => {
     renderPasswords();
     if (passwords.length === 0) {
@@ -141,12 +119,13 @@ window.addEventListener("load", () => {
     }
   };
 
-  // --- KAYDIRMA MANTIĞI ---
+  // --- KAYDIRMA MANTIĞI (BASİTLEŞTİRİLDİ VE DÜZELTİLDİ) ---
   let startX,
     currentX,
     isSwiping = false,
     swipeThreshold = -80,
     swipeActionWidth = 160;
+  let lastDiff = 0;
 
   const closeSwipedItem = (itemToExclude = null) => {
     document.querySelectorAll(".swipe-content.swiped").forEach((item) => {
@@ -157,7 +136,6 @@ window.addEventListener("load", () => {
     });
     swipedItem = itemToExclude;
   };
-
   const onSwipeStart = (e) => {
     const item = e.target.closest(".swipe-content");
     if (!item) return;
@@ -166,11 +144,11 @@ window.addEventListener("load", () => {
     } else {
       swipedItem = item;
     }
+    lastDiff = 0;
     startX = e.type.includes("mouse") ? e.pageX : e.touches[0].pageX;
     isSwiping = true;
     swipedItem.classList.add("swiping");
   };
-
   const onSwipeMove = (e) => {
     if (!isSwiping || !swipedItem) return;
     currentX = e.type.includes("mouse") ? e.pageX : e.touches[0].pageX;
@@ -179,30 +157,26 @@ window.addEventListener("load", () => {
       diff -= swipeActionWidth;
     }
     if (diff > 0) diff = 0;
+    lastDiff = diff;
     swipedItem.style.transform = `translateX(${Math.max(
       diff,
       -swipeActionWidth - 20
     )}px)`;
   };
-
   const onSwipeEnd = () => {
     if (!isSwiping || !swipedItem) return;
     isSwiping = false;
     swipedItem.classList.remove("swiping");
-    const transformMatrix = new WebKitCSSMatrix(
-      window.getComputedStyle(swipedItem).transform
-    );
-    if (transformMatrix.m41 < swipeThreshold) {
+
+    if (lastDiff < swipeThreshold) {
       swipedItem.style.transform = `translateX(-${swipeActionWidth}px)`;
       swipedItem.classList.add("swiped");
-      hapticFeedback();
     } else {
       swipedItem.style.transform = "translateX(0)";
       swipedItem.classList.remove("swiped");
       swipedItem = null;
     }
   };
-
   passwordsList.addEventListener("mousedown", onSwipeStart);
   passwordsList.addEventListener("touchstart", onSwipeStart, { passive: true });
   document.addEventListener("mousemove", onSwipeMove);
@@ -214,7 +188,6 @@ window.addEventListener("load", () => {
   // --- OLAY DİNLEYİCİLER ---
   fabAddBtn.addEventListener("click", () => {
     closeSwipedItem();
-    hapticFeedback();
     openModal(addModal);
   });
 
@@ -229,6 +202,15 @@ window.addEventListener("load", () => {
       }
     });
   });
+
+  document
+    .getElementById("confirm-delete-btn")
+    .addEventListener("click", () => {
+      if (typeof confirmAction === "function") {
+        confirmAction();
+      }
+      closeModal(confirmModal);
+    });
 
   passwordForm.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -284,7 +266,6 @@ window.addEventListener("load", () => {
             ? "Kullanıcı adı kopyalandı!"
             : "Şifre kopyalandı!"
         );
-        hapticFeedback();
       });
     } else if (button.classList.contains("view-btn")) {
       const item = button.closest(".swipe-content");
@@ -328,7 +309,6 @@ window.addEventListener("load", () => {
     URL.revokeObjectURL(url);
     showSuccessAnimation("Yedek başarıyla dışa aktarıldı!");
   });
-
   importFile.addEventListener("change", (e) => {
     const file = e.target.files[0];
     if (!file) return;
