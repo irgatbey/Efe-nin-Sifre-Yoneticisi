@@ -1,4 +1,4 @@
-// AÇILIŞ EKRANI MANTIĞI
+/* --- AÇILIŞ EKRANI MANTIĞI (DEĞİŞİKLİK YOK) --- */
 window.addEventListener("load", () => {
   const splashScreen = document.getElementById("splash-screen");
   if (splashScreen) {
@@ -8,10 +8,9 @@ window.addEventListener("load", () => {
   }
 });
 
-// ANA UYGULAMA MANTIĞI
+/* --- ANA UYGULAMA MANTIĞI --- */
 document.addEventListener("DOMContentLoaded", () => {
-  // --- HTML ELEMANLARI ---
-  const appContent = document.querySelector(".app-content");
+  /* --- HTML ELEMANLARI (DEĞİŞİKLİK YOK) --- */
   const fabAddBtn = document.getElementById("fab-add-btn");
   const passwordsList = document.getElementById("passwords-list");
   const exportButton = document.getElementById("export-button");
@@ -35,10 +34,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const toastNotification = document.getElementById("toast-notification");
   const toastMessage = document.getElementById("toast-message");
 
-  // --- VERİ YÖNETİMİ ---
+  /* --- VERİ YÖNETİMİ (DEĞİŞİKLİK YOK) --- */
   let passwords = JSON.parse(localStorage.getItem("passwords")) || [];
   let currentlyEditingIndex = null;
-  let swipedItem = null;
   let confirmAction = () => {};
 
   const savePasswords = () => {
@@ -46,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateUI();
   };
 
-  // --- YARDIMCI FONKSİYONLAR ---
+  /* --- YARDIMCI FONKSİYONLAR (DEĞİŞİKLİK YOK) --- */
   const showSuccessAnimation = (message) => {
     successMessage.textContent = message;
     successOverlay.classList.add("visible");
@@ -77,41 +75,45 @@ document.addEventListener("DOMContentLoaded", () => {
     openModal(confirmModal);
   };
 
-  // --- ARAYÜZ OLUŞTURMA ---
+  /* --- ARAYÜZ OLUŞTURMA (EN BÜYÜK DEĞİŞİKLİK BURADA) --- */
   const renderPasswords = () => {
     passwordsList.innerHTML = "";
     passwords.forEach((p, index) => {
-      const wrapper = document.createElement("div");
-      wrapper.className = "password-item-wrapper";
-      wrapper.innerHTML = `
-                <div class="swipe-actions">
-                    <button class="edit-action" data-index="${index}"><i class="fas fa-pen-to-square"></i><span>Düzenle</span></button>
-                    <button class="delete-action" data-index="${index}"><i class="fas fa-trash"></i><span>Sil</span></button>
-                </div>
-                <div class="swipe-content" data-index="${index}">
-                    <div class="info">
-                        <h3>${escapeHTML(p.site)}</h3>
-                        <p>
-                            <span class="username-text">${escapeHTML(
-                              p.username
-                            )}</span>
-                            <button class="copy-btn" data-type="username" data-index="${index}"><i class="far fa-copy"></i></button>
-                        </p>
-                        <p>
-                            <span class="password-text" style="display: none;">${escapeHTML(
-                              p.password
-                            )}</span>
-                            <span class="password-dots">${"*".repeat(
-                              p.password.length
-                            )}</span>
-                        </p>
-                    </div>
-                    <button class="view-btn" data-index="${index}"><i class="fas fa-eye"></i></button>
-                </div>
-            `;
-      passwordsList.appendChild(wrapper);
+      // Artık swipe yapısı yok, doğrudan yeni kart yapısını oluşturuyoruz
+      const card = document.createElement("div");
+      card.className = "password-item-wrapper";
+      card.innerHTML = `
+        <div class="info">
+          <h3>${escapeHTML(p.site)}</h3>
+          <p>
+            <span class="username-text">${escapeHTML(p.username)}</span>
+            <button class="icon-btn copy-btn" data-type="username" data-index="${index}" title="Kullanıcı adını kopyala">
+              <i class="far fa-copy"></i>
+            </button>
+          </p>
+          <p>
+            <span class="password-text" style="display: none;">${escapeHTML(
+              p.password
+            )}</span>
+            <span class="password-dots">${"*".repeat(p.password.length)}</span>
+          </p>
+        </div>
+        <div class="password-item-actions">
+          <button class="icon-btn view-btn" data-index="${index}" title="Şifreyi göster/gizle">
+            <i class="fas fa-eye"></i>
+          </button>
+          <button class="icon-btn edit-btn" data-index="${index}" title="Düzenle">
+            <i class="fas fa-pen-to-square"></i>
+          </button>
+          <button class="icon-btn delete-btn" data-index="${index}" title="Sil">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      `;
+      passwordsList.appendChild(card);
     });
   };
+
   const updateUI = () => {
     renderPasswords();
     if (passwords.length === 0) {
@@ -119,75 +121,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // --- KAYDIRMA MANTIĞI (BASİTLEŞTİRİLDİ VE DÜZELTİLDİ) ---
-  let startX,
-    currentX,
-    isSwiping = false,
-    swipeThreshold = -80,
-    swipeActionWidth = 160;
-  let lastDiff = 0;
+  /* --- KAYDIRMA MANTIĞI (TAMAMEN KALDIRILDI) --- */
+  // Eski swipe kodlarının hepsi silindi.
 
-  const closeSwipedItem = (itemToExclude = null) => {
-    document.querySelectorAll(".swipe-content.swiped").forEach((item) => {
-      if (item !== itemToExclude) {
-        item.classList.remove("swiped");
-        item.style.transform = "translateX(0)";
-      }
-    });
-    swipedItem = itemToExclude;
-  };
-  const onSwipeStart = (e) => {
-    const item = e.target.closest(".swipe-content");
-    if (!item) return;
-    if (swipedItem && swipedItem !== item) {
-      closeSwipedItem(item);
-    } else {
-      swipedItem = item;
-    }
-    lastDiff = 0;
-    startX = e.type.includes("mouse") ? e.pageX : e.touches[0].pageX;
-    isSwiping = true;
-    swipedItem.classList.add("swiping");
-  };
-  const onSwipeMove = (e) => {
-    if (!isSwiping || !swipedItem) return;
-    currentX = e.type.includes("mouse") ? e.pageX : e.touches[0].pageX;
-    let diff = currentX - startX;
-    if (swipedItem.classList.contains("swiped")) {
-      diff -= swipeActionWidth;
-    }
-    if (diff > 0) diff = 0;
-    lastDiff = diff;
-    swipedItem.style.transform = `translateX(${Math.max(
-      diff,
-      -swipeActionWidth - 20
-    )}px)`;
-  };
-  const onSwipeEnd = () => {
-    if (!isSwiping || !swipedItem) return;
-    isSwiping = false;
-    swipedItem.classList.remove("swiping");
-
-    if (lastDiff < swipeThreshold) {
-      swipedItem.style.transform = `translateX(-${swipeActionWidth}px)`;
-      swipedItem.classList.add("swiped");
-    } else {
-      swipedItem.style.transform = "translateX(0)";
-      swipedItem.classList.remove("swiped");
-      swipedItem = null;
-    }
-  };
-  passwordsList.addEventListener("mousedown", onSwipeStart);
-  passwordsList.addEventListener("touchstart", onSwipeStart, { passive: true });
-  document.addEventListener("mousemove", onSwipeMove);
-  document.addEventListener("touchmove", onSwipeMove, { passive: true });
-  document.addEventListener("mouseup", onSwipeEnd);
-  document.addEventListener("touchend", onSwipeEnd);
-  appContent.addEventListener("scroll", () => closeSwipedItem());
-
-  // --- OLAY DİNLEYİCİLER ---
+  /* --- OLAY DİNLEYİCİLER (MODAL KODLARI AYNI, LİSTE DİNLEYİCİSİ GÜNCELLENDİ) --- */
   fabAddBtn.addEventListener("click", () => {
-    closeSwipedItem();
     openModal(addModal);
   });
 
@@ -237,21 +175,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  /* --- YENİ LİSTE OLAY DİNLEYİCİSİ --- */
   passwordsList.addEventListener("click", (e) => {
-    const targetElement = e.target.closest(".swipe-content, button");
-    if (!targetElement) {
-      closeSwipedItem();
-      return;
-    }
-    if (
-      targetElement.classList.contains("swipe-content") &&
-      targetElement.classList.contains("swiped")
-    ) {
-      closeSwipedItem();
-      return;
-    }
-    const button = targetElement.closest("button");
+    // Sadece butonlara tıklamaları yakalıyoruz
+    const button = e.target.closest(".icon-btn");
     if (!button) return;
+
     const index = parseInt(button.dataset.index);
 
     if (button.classList.contains("copy-btn")) {
@@ -268,7 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
         );
       });
     } else if (button.classList.contains("view-btn")) {
-      const item = button.closest(".swipe-content");
+      const item = button.closest(".password-item-wrapper");
       const passwordText = item.querySelector(".password-text");
       const isHidden = passwordText.style.display === "none";
       passwordText.style.display = isHidden ? "inline" : "none";
@@ -277,13 +206,13 @@ document.addEventListener("DOMContentLoaded", () => {
         : "inline";
       button.querySelector("i").classList.toggle("fa-eye", !isHidden);
       button.querySelector("i").classList.toggle("fa-eye-slash", isHidden);
-    } else if (button.classList.contains("edit-action")) {
+    } else if (button.classList.contains("edit-btn")) {
       currentlyEditingIndex = index;
       editSiteNameInput.value = passwords[index].site;
       editUsernameInput.value = passwords[index].username;
       editPasswordInput.value = passwords[index].password;
       openModal(editModal);
-    } else if (button.classList.contains("delete-action")) {
+    } else if (button.classList.contains("delete-btn")) {
       showConfirmation(
         `'${passwords[index].site}' kaydını sil?`,
         "Bu işlemi geri alamazsınız.",
@@ -295,6 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  /* --- YEDEKLEME FONKSİYONLARI (DEĞİŞİKLİK YOK) --- */
   exportButton.addEventListener("click", () => {
     if (passwords.length === 0) return;
     const dataStr = JSON.stringify(passwords, null, 2);
@@ -340,6 +270,6 @@ document.addEventListener("DOMContentLoaded", () => {
     e.target.value = "";
   });
 
-  // --- UYGULAMAYI BAŞLAT ---
+  /* --- UYGULAMAYI BAŞLAT --- */
   updateUI();
 });
