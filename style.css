@@ -1,17 +1,18 @@
 /* --- GOOGLE FONT IMPORT --- */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
 
-/* --- RENK PALETİ --- */
+/* --- YENİ RENK PALETİ VE DEĞİŞKENLER --- */
 :root {
   --bg-color: #000000;
   --card-bg-color: #101010;
-  --primary-accent: #ffffff;
+  --primary-accent: #58a6ff;
   --danger-accent: #f85149;
   --success-accent: #3fb950;
   --text-color: #c9d1d9;
   --secondary-text-color: #8b949e;
   --border-color: #404040;
   --shadow-color: rgba(0, 0, 0, 0.2);
+  --transition-speed: 0.3s ease;
   --bouncy-transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -55,17 +56,16 @@ body {
   visibility: hidden;
 }
 .splash-logo {
-  width: 220px;
-  height: 220px;
-  animation: pulse 2s infinite ease-in-out;
+  width: 180px;
+  height: 180px;
 }
 
-/* --- ESNEK (FLEXBOX) ANA YAPI --- */
+/* --- ANA UYGULAMA DÜZENİ --- */
 .app-screen {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  width: 100%;
+  height: 100vh;
+  width: 100vw;
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
 }
@@ -73,15 +73,15 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 60px;
-  padding: 0.5rem;
+  padding: 1rem;
+  padding-top: calc(1rem + env(safe-area-inset-top));
   border-bottom: 1px solid var(--border-color);
-  background-color: var(--bg-color);
-  text-align: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   z-index: 100;
-  flex-shrink: 0;
 }
-.app-header img {
+.header-logo {
   height: 60px;
   width: auto;
 }
@@ -89,6 +89,7 @@ body {
   flex-grow: 1;
   overflow-y: auto;
   padding: 1.5rem;
+  padding-bottom: 100px;
 }
 
 /* --- YEDEKLEME BUTONLARI --- */
@@ -113,7 +114,7 @@ button,
   border: 1px solid var(--border-color);
   background-color: var(--card-bg-color);
   color: var(--text-color);
-  transition: var(--bouncy-transition);
+  transition: var(--bouncy-transition), all 0.2s ease;
 }
 button:hover,
 .file-label:hover {
@@ -153,16 +154,12 @@ input[type="file"] {
   border: none;
   transition: var(--bouncy-transition);
 }
-.fab i {
-  padding-left: 1px;
-  padding-top: 3px;
-}
 .fab:hover {
   box-shadow: 0 8px 25px rgba(255, 255, 255, 0.4);
 }
 .fab:active {
   transform: scale(0.9);
-  transition: transform 0.1s ease;
+  transition: all 0.1s ease;
 }
 
 /* --- KART TASARIMI --- */
@@ -172,13 +169,13 @@ input[type="file"] {
 }
 .password-item-wrapper {
   background-color: var(--card-bg-color);
-  border: 1px solid var(--border-color);
   border-radius: 16px;
   padding: 1.25rem;
   box-shadow: 0 4px 20px var(--shadow-color);
   display: flex;
   align-items: center;
   gap: 1rem;
+  border: 1px solid var(--border-color);
 }
 .password-item-wrapper .info {
   flex-grow: 1;
@@ -187,9 +184,9 @@ input[type="file"] {
 .password-item-wrapper .info h3 {
   font-size: 1.1rem;
   font-weight: 600;
-  white-space: normal;
-  overflow-wrap: break-word;
-  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .password-item-wrapper .info p {
   font-size: 0.9rem;
@@ -197,13 +194,11 @@ input[type="file"] {
   display: flex;
   align-items: center;
   gap: 8px;
-  overflow-wrap: break-word;
 }
 .password-item-actions {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  flex-shrink: 0;
 }
 .icon-btn {
   background: none;
@@ -217,7 +212,7 @@ input[type="file"] {
 }
 .icon-btn:hover {
   color: var(--primary-accent);
-  background-color: rgba(88, 166, 255, 0.1);
+  background-color: #2a3038;
 }
 .icon-btn:active {
   transform: scale(0.85);
@@ -243,14 +238,6 @@ input[type="file"] {
 .modal-overlay.visible {
   display: flex;
 }
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
 .modal-content {
   background: var(--card-bg-color);
   border: 1px solid var(--border-color);
@@ -259,18 +246,8 @@ input[type="file"] {
   width: 90%;
   max-width: 400px;
   position: relative;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   animation: scaleUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
-@keyframes scaleUp {
-  from {
-    transform: scale(0.9);
-    opacity: 0.5;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
 }
 .modal-close-btn {
   position: absolute;
@@ -295,7 +272,7 @@ input[type="file"] {
   background-color: var(--bg-color);
   color: var(--text-color);
   font-size: 1rem;
-  transition: all 0.3s ease;
+  transition: all var(--transition-speed);
 }
 .modal-content input:focus {
   outline: none;
@@ -305,7 +282,7 @@ input[type="file"] {
 .main-action-btn {
   width: 100%;
   background-color: var(--primary-accent);
-  color: var(--bg-color);
+  color: #fff;
   border: none;
 }
 .danger-btn {
@@ -397,8 +374,8 @@ input[type="file"] {
   animation: scaleIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s forwards;
 }
 .checkmark__circle {
-  stroke-dasharray: 170;
-  stroke-dashoffset: 170;
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
   stroke-width: 4;
   stroke: var(--success-accent);
   fill: none;
@@ -408,8 +385,8 @@ input[type="file"] {
 }
 .checkmark__check {
   transform-origin: 50% 50%;
-  stroke-dasharray: 50;
-  stroke-dashoffset: 50;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
   stroke-width: 5;
   stroke: #ffffff;
   fill: none;
@@ -419,6 +396,24 @@ input[type="file"] {
 }
 
 /* --- ANİMASYON KEYFRAME'LERİ --- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes scaleUp {
+  from {
+    transform: scale(0.9);
+    opacity: 0.5;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
 @keyframes stroke {
   100% {
     stroke-dashoffset: 0;
@@ -432,16 +427,5 @@ input[type="file"] {
   to {
     transform: scale(1);
     opacity: 1;
-  }
-}
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
   }
 }

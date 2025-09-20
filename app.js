@@ -1,4 +1,4 @@
-/* --- AÇILIŞ EKRANI MANTIĞI (DEĞİŞİKLİK YOK) --- */
+/* --- AÇILIŞ EKRANI MANTIĞI --- */
 window.addEventListener("load", () => {
   const splashScreen = document.getElementById("splash-screen");
   if (splashScreen) {
@@ -10,7 +10,7 @@ window.addEventListener("load", () => {
 
 /* --- ANA UYGULAMA MANTIĞI --- */
 document.addEventListener("DOMContentLoaded", () => {
-  /* --- HTML ELEMANLARI (DEĞİŞİKLİK YOK) --- */
+  /* --- HTML ELEMANLARI --- */
   const fabAddBtn = document.getElementById("fab-add-btn");
   const passwordsList = document.getElementById("passwords-list");
   const exportButton = document.getElementById("export-button");
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const toastNotification = document.getElementById("toast-notification");
   const toastMessage = document.getElementById("toast-message");
 
-  /* --- VERİ YÖNETİMİ (DEĞİŞİKLİK YOK) --- */
+  /* --- VERİ YÖNETİMİ --- */
   let passwords = JSON.parse(localStorage.getItem("passwords")) || [];
   let currentlyEditingIndex = null;
   let confirmAction = () => {};
@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateUI();
   };
 
-  /* --- YARDIMCI FONKSİYONLAR (DEĞİŞİKLİK YOK) --- */
+  /* --- YARDIMCI FONKSİYONLAR --- */
   const showSuccessAnimation = (message) => {
     successMessage.textContent = message;
     successOverlay.classList.add("visible");
@@ -75,11 +75,11 @@ document.addEventListener("DOMContentLoaded", () => {
     openModal(confirmModal);
   };
 
-  /* --- ARAYÜZ OLUŞTURMA (EN BÜYÜK DEĞİŞİKLİK BURADA) --- */
+  /* --- YENİLENMİŞ ARAYÜZ OLUŞTURMA --- */
   const renderPasswords = () => {
     passwordsList.innerHTML = "";
     passwords.forEach((p, index) => {
-      // Artık swipe yapısı yok, doğrudan yeni kart yapısını oluşturuyoruz
+      // Swipe yapısı yerine doğrudan yeni kart yapısını oluşturuyoruz
       const card = document.createElement("div");
       card.className = "password-item-wrapper";
       card.innerHTML = `
@@ -87,9 +87,6 @@ document.addEventListener("DOMContentLoaded", () => {
           <h3>${escapeHTML(p.site)}</h3>
           <p>
             <span class="username-text">${escapeHTML(p.username)}</span>
-            <button class="icon-btn copy-btn" data-type="username" data-index="${index}" title="Kullanıcı adını kopyala">
-              <i class="far fa-copy"></i>
-            </button>
           </p>
           <p>
             <span class="password-text" style="display: none;">${escapeHTML(
@@ -99,6 +96,9 @@ document.addEventListener("DOMContentLoaded", () => {
           </p>
         </div>
         <div class="password-item-actions">
+          <button class="icon-btn copy-btn" data-type="username" data-index="${index}" title="Kullanıcı adını kopyala">
+            <i class="far fa-copy"></i>
+          </button>
           <button class="icon-btn view-btn" data-index="${index}" title="Şifreyi göster/gizle">
             <i class="fas fa-eye"></i>
           </button>
@@ -122,9 +122,8 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   /* --- KAYDIRMA MANTIĞI (TAMAMEN KALDIRILDI) --- */
-  // Eski swipe kodlarının hepsi silindi.
 
-  /* --- OLAY DİNLEYİCİLER (MODAL KODLARI AYNI, LİSTE DİNLEYİCİSİ GÜNCELLENDİ) --- */
+  /* --- OLAY DİNLEYİCİLER --- */
   fabAddBtn.addEventListener("click", () => {
     openModal(addModal);
   });
@@ -175,26 +174,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  /* --- YENİ LİSTE OLAY DİNLEYİCİSİ --- */
+  /* --- YENİ LİSTE OLAY DİNLEYİCİSİ (SWIPE YERİNE) --- */
   passwordsList.addEventListener("click", (e) => {
-    // Sadece butonlara tıklamaları yakalıyoruz
     const button = e.target.closest(".icon-btn");
     if (!button) return;
 
     const index = parseInt(button.dataset.index);
 
     if (button.classList.contains("copy-btn")) {
-      const type = button.dataset.type;
-      const textToCopy =
-        type === "username"
-          ? passwords[index].username
-          : passwords[index].password;
+      const textToCopy = passwords[index].username;
       navigator.clipboard.writeText(textToCopy).then(() => {
-        showToast(
-          type === "username"
-            ? "Kullanıcı adı kopyalandı!"
-            : "Şifre kopyalandı!"
-        );
+        showToast("Kullanıcı adı kopyalandı!");
       });
     } else if (button.classList.contains("view-btn")) {
       const item = button.closest(".password-item-wrapper");
@@ -224,7 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  /* --- YEDEKLEME FONKSİYONLARI (DEĞİŞİKLİK YOK) --- */
+  /* --- YEDEKLEME FONKSİYONLARI --- */
   exportButton.addEventListener("click", () => {
     if (passwords.length === 0) return;
     const dataStr = JSON.stringify(passwords, null, 2);
