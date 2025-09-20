@@ -1,7 +1,7 @@
 /* --- GOOGLE FONT IMPORT --- */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
 
-/* --- KOYU MOD RENK PALETİ --- */
+/* --- RENK PALETİ --- */
 :root {
   --bg-color: #000000;
   --card-bg-color: #101010;
@@ -12,7 +12,8 @@
   --secondary-text-color: #8b949e;
   --border-color: #404040;
   --shadow-color: rgba(0, 0, 0, 0.2);
-  --bouncy-transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --bouncy-transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    color 0.4s ease;
 }
 
 /* --- TEMEL SAYFA STİLLERİ --- */
@@ -33,7 +34,7 @@ body {
   background-color: var(--bg-color);
   color: var(--text-color);
   line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
+  -webkit-font-smoothing: antased;
 }
 
 /* --- AÇILIŞ EKRANI --- */
@@ -64,15 +65,18 @@ body {
 .app-screen {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  width: 100vw;
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
+  height: 100%;
+  width: 100%;
 }
 .app-header {
-  padding-top: env(safe-area-inset-top);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem;
+  padding-top: calc(1rem + env(safe-area-inset-top));
   border-bottom: 1px solid var(--border-color);
-  background-color: rgba(13, 17, 23, 0.7);
+  background-color: rgba(13, 17, 23, 0.8);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   text-align: center;
@@ -81,13 +85,13 @@ body {
 .app-header img {
   width: 80px;
   height: 80px;
-  align-self: center;
 }
 .app-content {
   flex-grow: 1;
   overflow-y: auto;
   padding: 1.5rem;
-  padding-bottom: 100px;
+  padding-top: 100px;
+  padding-bottom: calc(100px + env(safe-area-inset-bottom));
 }
 
 /* --- YEDEKLEME BUTONLARI --- */
@@ -123,7 +127,7 @@ button:hover,
 button:active,
 .file-label:active {
   transform: scale(0.9);
-  transition: transform 0.1s ease;
+  transition: all 0.1s ease;
   background-color: white;
   color: black;
 }
@@ -147,7 +151,7 @@ input[type="file"] {
   justify-content: center;
   align-items: center;
   font-size: 1.8rem;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 20px rgba(156, 156, 156, 0.2);
   z-index: 500;
   border: none;
   transition: var(--bouncy-transition);
@@ -348,7 +352,7 @@ input[type="file"] {
   color: var(--success-accent);
 }
 
-/* --- BAŞARI ANİMASYONU --- */
+/* --- FİNAL BAŞARI ANİMASYONU --- */
 .success-overlay {
   position: fixed;
   top: 0;
