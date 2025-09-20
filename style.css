@@ -1,7 +1,7 @@
 /* --- GOOGLE FONT IMPORT --- */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
 
-/* --- KOYU MOD RENK PALETİ --- */
+/* --- RENK PALETİ --- */
 :root {
   --bg-color: #000000;
   --card-bg-color: #101010;
@@ -55,8 +55,8 @@ body {
   visibility: hidden;
 }
 .splash-logo {
-  width: 120px;
-  height: 120px;
+  width: 220px;
+  height: 220px;
   animation: pulse 2s infinite ease-in-out;
 }
 
@@ -69,8 +69,6 @@ body {
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
 }
-
-/* --- YENİ HEADER VE LOGO STİLLERİ --- */
 .app-header {
   display: flex;
   justify-content: center;
@@ -119,7 +117,6 @@ button,
 }
 button:hover,
 .file-label:hover {
-  transition: all 0.1s ease;
   transform: translateY(-3px);
   box-shadow: 0 4px 15px var(--shadow-color);
   border-color: var(--primary-accent);
@@ -127,7 +124,7 @@ button:hover,
 button:active,
 .file-label:active {
   transform: scale(0.9);
-  transition: all 0.1s ease;
+  transition: transform 0.1s ease;
   background-color: white;
   color: black;
 }
@@ -190,9 +187,8 @@ input[type="file"] {
 .password-item-wrapper .info h3 {
   font-size: 1.1rem;
   font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  overflow-wrap: break-word;
   color: #fff;
 }
 .password-item-wrapper .info p {
@@ -201,11 +197,13 @@ input[type="file"] {
   display: flex;
   align-items: center;
   gap: 8px;
+  overflow-wrap: break-word;
 }
 .password-item-actions {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  flex-shrink: 0;
 }
 .icon-btn {
   background: none;
@@ -441,7 +439,7 @@ input[type="file"] {
     transform: scale(1);
   }
   50% {
-    transform: scale(1.05);
+    transform: scale(1.1);
   }
   100% {
     transform: scale(1);
