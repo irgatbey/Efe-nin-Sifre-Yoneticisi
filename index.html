@@ -141,6 +141,23 @@
       <p id="success-message"></p>
     </div>
 
+    <div id="name-modal" class="modal-overlay">
+      <div class="modal-content">
+        <h2>Hoş Geldiniz!</h2>
+        <p>Lütfen şifre kasanıza bir isim verin.</p>
+        <form id="name-form">
+          <input
+            type="text"
+            id="user-name-input"
+            placeholder="İsminiz"
+            required
+            autocomplete="name"
+          />
+          <button type="submit" class="main-action-btn">Kaydet</button>
+        </form>
+      </div>
+    </div>
+
     <script src="app.js"></script>
   </body>
 </html>

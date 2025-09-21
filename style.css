@@ -561,3 +561,9 @@ input[type="file"] {
     transform: scale(1);
   }
 }
+
+#name-modal .modal-content p {
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: var(--secondary-text-color);
+}

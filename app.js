@@ -12,6 +12,7 @@ window.addEventListener("load", () => {
 document.addEventListener("DOMContentLoaded", () => {
   // --- HTML ELEMANLARI ---
   const appContent = document.querySelector(".app-content");
+  const headerTitle = document.querySelector(".app-header h1"); // Yeni eklendi
   const fabAddBtn = document.getElementById("fab-add-btn");
   const passwordsList = document.getElementById("passwords-list");
   const exportButton = document.getElementById("export-button");
@@ -20,6 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const addModal = document.getElementById("add-modal");
   const editModal = document.getElementById("edit-modal");
   const confirmModal = document.getElementById("confirm-modal");
+  const nameModal = document.getElementById("name-modal"); // Yeni eklendi
   const passwordForm = document.getElementById("password-form");
   const siteNameInput = document.getElementById("site-name");
   const usernameInput = document.getElementById("username");
@@ -28,6 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const editSiteNameInput = document.getElementById("edit-site-name");
   const editUsernameInput = document.getElementById("edit-username");
   const editPasswordInput = document.getElementById("edit-password");
+  const nameForm = document.getElementById("name-form"); // Yeni eklendi
+  const userNameInput = document.getElementById("user-name-input"); // Yeni eklendi
   const confirmTitle = document.getElementById("confirm-title");
   const confirmText = document.getElementById("confirm-text");
   const successOverlay = document.getElementById("success-overlay");
@@ -77,6 +81,30 @@ document.addEventListener("DOMContentLoaded", () => {
     openModal(confirmModal);
   };
 
+  // --- YENİ FONKSİYONLAR ---
+  const updateHeaderText = () => {
+    const userName = localStorage.getItem("userName");
+    if (userName) {
+      const escapedUserName = escapeHTML(userName);
+      headerTitle.textContent = `${escapedUserName}'nin Şifre Kasası`;
+      document.title = `${escapedUserName}'nin Şifre Kasası`;
+    } else {
+      // Kullanıcı adı yoksa varsayılan başlık
+      headerTitle.textContent = `Şifre Kasası`;
+      document.title = `Şifre Kasası`;
+    }
+  };
+
+  const checkUserName = () => {
+    const userName = localStorage.getItem("userName");
+    if (!userName) {
+      // name-modal'ı diğer modalları kapatma mekanizmasından hariç tutmak için
+      // click event'ini burada durduruyoruz.
+      nameModal.addEventListener("click", (e) => e.stopPropagation());
+      openModal(nameModal);
+    }
+  };
+
   // --- ARAYÜZ OLUŞTURMA ---
   const renderPasswords = () => {
     passwordsList.innerHTML = "";
@@ -119,7 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // --- KAYDIRMA MANTIĞI (BASİTLEŞTİRİLDİ VE DÜZELTİLDİ) ---
+  // --- KAYDIRMA MANTIĞI ---
   let startX,
     currentX,
     isSwiping = false,
@@ -193,6 +221,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   allModals.forEach((modal) => {
     modal.addEventListener("click", (e) => {
+      // İsim girme modalı hariç tutuluyor
+      if (modal.id === "name-modal") return;
       if (
         e.target.matches(
           ".modal-overlay, .modal-close-btn, .modal-close-btn i, #confirm-cancel-btn"
@@ -201,6 +231,16 @@ document.addEventListener("DOMContentLoaded", () => {
         closeModal(modal);
       }
     });
+  });
+
+  nameForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const userName = userNameInput.value.trim();
+    if (userName) {
+      localStorage.setItem("userName", userName);
+      updateHeaderText();
+      closeModal(nameModal);
+    }
   });
 
   document
@@ -301,8 +341,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const blob = new Blob([dataStr], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
+    const userName = localStorage.getItem("userName") || "kullanici";
     link.href = url;
-    link.download = `sifre_yedek_${
+    link.download = `${userName}_sifre_yedek_${
       new Date().toISOString().split("T")[0]
     }.json`;
     link.click();
@@ -341,5 +382,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // --- UYGULAMAYI BAŞLAT ---
+  updateHeaderText();
   updateUI();
+  checkUserName();
 });
